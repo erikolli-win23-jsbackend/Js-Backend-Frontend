@@ -1,0 +1,46 @@
+.sign-up {
+
+    .container {
+
+        .sign-up-box {
+            width: 40%;
+            height: auto;
+            margin: auto;
+            margin-top: 2rem;
+
+            @media (min-width: 1921px) {
+                margin-top: 12rem;
+            }
+
+
+            h1 {
+                padding-bottom: 1.5rem;
+            }
+
+            .text-m {
+                padding-bottom: 1.5rem;
+            }
+
+            .theme-color {
+                text-decoration: none;
+            }
+
+            .form-group {
+
+                .theme-color {
+                    text-decoration: underline;
+                }
+            }
+
+            .theme-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    }
+}
+
+.footer-sign-up {
+    text-align: center;
+    padding: 0 0 5rem 0;
+}

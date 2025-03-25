@@ -1,0 +1,41 @@
+.dashboard {
+
+    .container {
+        display: flex;
+        align-items: center;
+        padding: 4vh 0;
+
+        .work-checks {
+            padding-left: 6vw;
+
+
+            h2 {
+                padding-bottom: 2vh;
+                line-height: 130%;
+            }
+
+            .manage-work-text {
+                padding-bottom: 2.5rem;
+
+                p {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    margin-bottom: 1rem;
+
+                    i {
+                        color: #6366F1;
+                    }
+                }
+            }
+
+            .theme-btn {
+
+                i {
+                    vertical-align: middle;
+                    margin-left: 1rem;
+                }
+            }
+        }
+    }
+}

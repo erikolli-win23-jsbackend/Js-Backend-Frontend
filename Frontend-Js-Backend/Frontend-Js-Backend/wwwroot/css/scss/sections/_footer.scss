@@ -1,0 +1,38 @@
+footer {
+
+    .container {
+
+        .footer-index {
+            text-align: center;
+            padding: 5rem 0 5rem 0;
+        }
+
+        .social-btn {
+
+            i {
+                color: #33354D;
+                font-size: 1.2rem;
+            }
+
+            &:hover {
+                background-color: #565973;
+            }
+
+            &:hover i {
+                color: #ffffff;
+            }
+        }
+
+        a {
+
+            i:hover {
+                color: #33354D;
+            }
+        }
+
+        .standard-text {
+            color: #9397AD;
+            padding-top: 3rem;
+        }
+    }
+}

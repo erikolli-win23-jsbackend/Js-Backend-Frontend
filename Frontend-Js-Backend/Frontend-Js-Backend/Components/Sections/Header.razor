@@ -1,0 +1,42 @@
+﻿<header>
+    <div class="container">
+        <a href=""><img src="images/logo/solid-white.svg" alt="company logo and name"></a>
+        <nav>
+            <NavLink href="" Match="NavLinkMatch.All" class="text-nav">Overview</NavLink>
+            <NavLink href="#tool-info" class="text-nav">Features</NavLink>
+           
+            <AuthorizeView>
+                <Authorized>
+                    <NavLink href="/courses" class="text-nav">Courses</NavLink>
+                </Authorized>
+            </AuthorizeView>
+                  
+            <NavLink href="/contacts" class="text-nav">Contact</NavLink>
+        </nav>
+        <div class="right-nav">
+            <div class="switch-btn">
+                <label class="switch-color"><span class="text-nav">Light</span></label>
+                <label class="switch">
+                    <input type="checkbox" />
+                    <span class="slider round"></span>
+                </label>
+                <label class="switch-color"><span class="text-nav">Dark</span></label>
+            </div>
+            <div class="acc-btns text-nav text-s">
+
+                <AuthorizeView>
+                    <Authorized>
+                        <a href="/account/details">
+                            <img src="/images/uploads/profiles/avatar.png"/>
+                        </a>
+                    </Authorized>
+                    <NotAuthorized>
+                        <a class="white-btn" href="/signin"><i class="fa-solid fa-right-to-bracket"></i><span>Sign In</span></a>
+                        <a class="theme-btn" href="/signup"><i class="fa-regular fa-user"></i><span>Sign Up</span></a>
+                    </NotAuthorized>
+                </AuthorizeView>
+
+            </div>
+        </div>
+    </div>
+</header>

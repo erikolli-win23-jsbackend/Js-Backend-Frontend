@@ -1,0 +1,135 @@
+.alt-nav {
+    display: flex;
+    margin-right: 42rem !important;
+    gap: 1.5rem;
+}
+
+.account-details {
+
+    .container {
+
+        .account-details-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+
+            .account-details-left {
+                border-right: 1px solid #E2E5F1;
+                padding-top: 2rem;
+
+                .profile-image {
+                    position: relative;
+
+                    img {
+                        position: relative;
+                        border-radius: 50%;
+                        height: 11rem;
+                        width: 11rem;
+                    }
+
+                    .upload-profile-pic {
+                        padding: 0.8rem;
+                        background-color: #ffffff;
+                        border-radius: 50%;
+                        color: #33354D;
+                        position: absolute;
+                        right: 50%;
+                        bottom: 1.75rem;
+                        right: 5.5rem;
+                        font-size: 1rem;
+                        border: 1px solid #E2E5F1;
+                        cursor: pointer;
+                    }
+                }
+
+
+
+                .profile-navbar {
+                    background: #fff;
+                    padding: 20px;
+                    border-radius: 8px;
+
+
+                    .menu-link {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.75rem;
+                        padding: 1rem;
+                        font-size: 16px;
+                        color: #33354D;
+                        border-radius: 0.5rem;
+                        text-decoration: none;
+                        transition: background 0.2s ease-in-out;
+                        padding-left: 1rem;
+                        padding-right: 8rem;
+
+                        &:hover {
+                            background: #EFF2FC;
+                        }
+
+                        &.active {
+                            background: #625ef5;
+                            color: #fff;
+                        }
+                    }
+                }
+
+                .sign-out-btn {
+                    display: flex;
+                    padding-top: 1rem;
+
+                    .white-btn {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.75rem;
+                    }
+                }
+            }
+
+            .account-details-right {
+                padding-left: 7rem;
+
+                h2 {
+                    padding-top: 3rem;
+                }
+
+                h5 {
+                    padding: 1.7rem 0;
+                }
+
+                .form-group {
+
+                    .optional-color {
+                        color: #B9B9B9;
+                    }
+
+                    .bio-textarea {
+                        width: 100%;
+                        min-height: 7rem;
+                        padding: 0.6rem 1rem;
+                        border: 1px solid #B4B7C9;
+                        border-radius: 0.4rem;
+
+                        &::placeholder {
+                            color: #B4B7C9;
+                        }
+
+                        &:focus {
+                            outline: none;
+                            border: 1px solid #565973;
+                        }
+                    }
+                }
+
+                hr {
+                    margin-top: 3rem;
+                }
+
+                .btn-flex-form {
+                    display: flex;
+                    gap: 1.5rem;
+                    padding-bottom: 5rem;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,100 @@
+﻿@using static Frontend_Js_Backend.Components.Sections.Newsletter
+
+
+<section id="subscribe" class="newsletter">
+    <div class="container">
+        <div class="flex">
+            <h1 class="standard-heading">Don't Want to Miss Anything?</h1>
+            <img src="/images/pics/arrows.png" alt="picture of arrow going in circles">
+        </div>
+        <EditForm FormName="Subscribe" Model="SubscribeForm" OnValidSubmit="OnValidSubmit" method="post" novalidate>
+            <div class="newsletter-form">
+                <h5 class="standard-heading">Sign up for<br> Newsletters</h5>
+
+                <div class="newsletter-options">
+                    <div class="checkbox-group">
+                        <div class="input-group">
+                            <InputCheckbox @bind-Value="SubscribeForm.DailyNewsletter" />
+                            <label class="standard-text text-s">DailyNewsletter</label>
+                        </div>
+                    </div>
+                    <div class="checkbox-group">
+                        <div class="input-group">
+                            <InputCheckbox @bind-Value="SubscribeForm.AdvertisingUpdates" />
+                            <label class="standard-text text-s">AdvertisingUpdates</label>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <div class="input-group">
+                            <InputCheckbox @bind-Value="SubscribeForm.WeekinReview" />
+                            <label class="standard-text text-s">WeekinReview</label>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <div class="input-group">
+                            <InputCheckbox @bind-Value="SubscribeForm.EvenUpdates" />
+                            <label class="standard-text text-s">EvenUpdates</label>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <div class="input-group">
+                            <InputCheckbox @bind-Value="SubscribeForm.StartupsWeekly" />
+                            <label class="standard-text text-s">StartupsWeekly</label>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <div class="input-group">
+                            <InputCheckbox @bind-Value="SubscribeForm.Podcasts" />
+                            <label class="standard-text text-s">Podcasts</label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="email-form">
+                <i class="fa-regular fa-envelope"></i>
+                <InputText type="email" @bind-Value="SubscribeForm.Email" placeholder="Your Email" class="form-sign-in" />
+                <button type="submit" class="theme-btn">Subscribe*</button>
+            </div>
+            <span class="subscribe-status-message">@StatusMessage</span>
+        </EditForm>
+    </div>
+</section>
+
+
+@code {
+    [SupplyParameterFromQuery]
+    public string StatusMessage { get; set; } = "*Yes, I agree to the terms and privacy policy.";
+
+    [SupplyParameterFromForm]
+    public SubsribeFormModel SubscribeForm { get; set; } = new SubsribeFormModel();
+
+    private async Task OnValidSubmit()
+    {
+        StatusMessage = "You are now subscribed";
+    }
+
+
+    public class SubsribeFormModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = null!;
+
+        public bool DailyNewsletter { get; set; }
+
+        public bool EvenUpdates { get; set; }
+
+        public bool AdvertisingUpdates { get; set; }
+
+        public bool StartupsWeekly { get; set; }
+
+        public bool WeekinReview { get; set; }
+
+        public bool Podcasts { get; set; }
+    }
+}

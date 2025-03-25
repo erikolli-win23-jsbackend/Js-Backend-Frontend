@@ -1,0 +1,250 @@
+﻿@page "/courses/{id}"
+@using System.Text.Json
+@inject HttpClient Http
+
+
+
+@if (course == null)
+{
+    <p><em>Loading course...</em></p>
+}
+else
+{
+
+    <section class="single-course">
+        <div class="single-course-showcase">
+            <img src="@course.ImageHeaderUri" alt="@course.Title showcase image">
+            <div class="showcase-content ">
+                <div class="flex-tag">
+                    @if (course.IsBestSeller)
+                    {
+                        <p class="best-seller-tag text-s">Best Seller</p>
+                    }
+                    @if (course.IsDigital)
+                    {
+                        <p class="digital-tag text-s">Digital</p>
+                    }
+                </div>
+                <h1 class="standard-heading">@course.Title</h1>
+                <p class="text-l ">@course.Ingress</p>
+                <div class="course-info">
+                    <div class="rating">
+                        <span class="stars">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= course.StarRating)
+                                {
+                                    <i class="fa-solid fa-star"></i> 
+                                }
+                                else
+                                {
+                                    <i class="fa-regular fa-star"></i>
+                                }
+                            }
+                        </span>
+                        <span class="reviews">(@course.Reviews)</span>
+                    </div>
+                    <div class="likes">
+                        <i class="fa-regular fa-thumbs-up"></i>
+                        <span>@course.Likes</span>
+                    </div>
+                    <div class="hours">
+                        <i class="fa-regular fa-clock"></i>
+                        <span>@course.Hours</span>
+                    </div>
+                </div>
+                <div class="flex">
+                    @foreach (var author in course.Authors)
+                    {
+                        <div class="author">
+                            <img src="@author.AuthorImage"
+                                 alt="profile picture of @author.FirstName @author.LastName" />
+
+                            <div class="author-by">
+                                <h6>Created By</h6>
+                                <p>@($"{author.FirstName} {author.LastName}")</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                
+            </div>
+        </div>
+        <div class="container">
+            <div class="course-description">
+                <div class="course-description-left">
+                    <div class="course-info-head">
+                        @if (!string.IsNullOrWhiteSpace(course.Content?.Description))
+                        {
+                            <div>@((MarkupString)course.Content.Description)</div>
+                        }
+                    </div>
+                </div>
+                <div class="course-description-right">
+                    <div class="course-includes">
+                        <h4>This course includes:</h4>
+                        <div class="course-includes-info">
+                            @if (course?.Content?.Includes != null)
+                            {
+                                @for (int i = 0; i < course.Content.Includes.Count; i++)
+                                {
+                                    var include = course.Content.Includes[i];
+                                    var iconClass = i switch
+                                    {
+                                        0 => "fa-regular fa-video",        
+                                        1 => "fa-regular fa-newspaper",   
+                                        2 => "fa-regular fa-download",    
+                                        3 => "fa-regular fa-infinity",    
+                                        4 => "fa-regular fa-trophy",      
+                                    };
+
+                                    <p class="text-m standard-text">
+                                        <i class="@iconClass"></i>
+                                        @include
+                                    </p>
+                                }
+                            }
+                        </div>
+                        <div class="flex">
+                            @if (course.Prices?.Discount > 0)
+                            {
+                                <h2 class="standard-heading">@course.Prices.Currency@course.Prices.Price</h2>
+                                <p class="text-xl price-before">@course.Prices.Currency@course.Prices.Discount</p>
+                            }
+                            else
+                            {
+                                <h2 class="standard-heading">@course.Prices.Currency@course.Prices.Price</h2>
+                            }
+                        </div>
+                        <a href="#" class="theme-btn">Join Course</a>
+                    </div>
+                </div>
+            </div>
+            <div class="program-details">
+                <h1 class="standard-heading">Program Details</h1>
+                @if (course?.Content?.ProgramDetails != null)
+                {
+                    @foreach (var detail in course.Content.ProgramDetails)
+                    {
+                        <div class="steps">
+                            <h4 class="circle standard-heading">@detail.Id</h4>
+                            <div class="content-details">
+                                <h4 class="standard-heading">@detail.Title</h4>
+                                <p class="standard-text">@detail.Description</p>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </section>
+}
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    private CourseModel? course;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var query = new
+        {
+            query = @"
+                query($id: String!) {
+                    getCourseById(id: $id) {
+                        id
+                        title
+                        imageUri
+                        imageHeaderUri
+                        isBestSeller
+                        isDigital
+                        categories
+                        ingress
+                        starRating
+                        hours
+                        likes
+                        likesInProcent
+                        reviews
+                        authors {
+                            firstName
+                            lastName
+                            authorImage
+                        }
+                        prices {
+                            currency
+                            price
+                            discount
+                        }
+                        content {
+                            description
+                            includes
+                            programDetails {
+                                id
+                                title
+                                description
+                            }
+                        }
+                    }
+                }",
+            variables = new { id = Id }
+        };
+
+        var response = await Http.PostAsJsonAsync("https://courseprovider-win23jsbackend-erikolli.azurewebsites.net/api/graphql", query);
+        var jsonDoc = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
+
+        var courseData = jsonDoc.RootElement.GetProperty("data").GetProperty("getCourseById");
+
+        course = JsonSerializer.Deserialize<CourseModel>(courseData.GetRawText(), new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+    }
+
+    public class CourseModel
+    {
+        public string Id { get; set; } = null!;
+        public string? Title { get; set; }
+        public string? ImageUri { get; set; }
+        public string? ImageHeaderUri { get; set; }
+        public bool IsBestSeller { get; set; }
+        public bool IsDigital { get; set; }
+        public string? Ingress { get; set; }
+        public decimal StarRating { get; set; }
+        public string? Hours { get; set; }
+        public string? Likes { get; set; }
+        public string? LikesInProcent { get; set; }
+        public string? Reviews { get; set; }
+        public List<Author> Authors { get; set; } = new();
+        public Prices? Prices { get; set; }
+        public Content? Content { get; set; }
+    }
+
+    public class Author
+    {
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? AuthorImage { get; set; }
+    }
+
+    public class Prices
+    {
+        public string? Currency { get; set; }
+        public decimal? Price { get; set; }
+        public decimal? Discount { get; set; }
+    }
+
+    public class Content
+    {
+        public string? Description { get; set; }
+        public List<string>? Includes { get; set; }
+        public List<ProgramDetail>? ProgramDetails { get; set; }
+    }
+
+    public class ProgramDetail
+    {
+        public int Id { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+    }
+}

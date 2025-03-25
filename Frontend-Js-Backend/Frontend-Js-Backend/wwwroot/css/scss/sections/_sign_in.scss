@@ -1,0 +1,48 @@
+.sign-in {
+
+    .container {
+
+
+        .sign-in-box {
+            width: 40%;
+            height: auto;
+            margin: auto;
+            margin-top: 8rem;
+
+
+            @media (min-width: 1921px) {
+                margin-top: 12rem;
+            }
+
+            h1 {
+                padding-bottom: 1.5rem;
+                
+            }
+
+            .text-m {
+                padding-bottom: 1.5rem;
+            }
+
+            .theme-color {
+                text-decoration: none;
+            }
+
+            .theme-btn {
+                width: 100%;
+            }
+
+            .forgot-password {
+                display: block;
+                text-align: center;
+                padding-top: 2rem;
+                font-weight: 600;
+                line-height: 160%;
+            }
+        }
+    }
+}
+
+.footer-sign-in {
+    text-align: center;
+    padding: 0 0 5rem 0;
+}

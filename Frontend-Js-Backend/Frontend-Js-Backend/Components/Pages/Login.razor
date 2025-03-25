@@ -1,0 +1,105 @@
+﻿@page "/signin"
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Identity
+@using Frontend_Js_Backend.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject ILogger<Login> Logger
+@inject NavigationManager NavigationManager
+
+<PageTitle>Log in</PageTitle>
+
+<section class="sign-in">
+    <div class="container">
+
+
+        <div class="sign-in-box">
+
+
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="alert-message danger section-text-center">
+                    @StatusMessage
+                </div>
+            }
+
+            <EditForm FormName="signinform" Model="SignInForm" OnValidSubmit="LoginUser" method="post" novalidate>
+                <DataAnnotationsValidator />
+                <h1 class="standard-heading">Welcome Back</h1>
+                <p class="standard-text text-m">Don't have an account yet? <a href="/signup" class="theme-color">Sign up here.</a></p>
+                <div id="form-email" class="form-group">
+                    <label class="standard-heading">Email</label>
+                    <InputText type="email" @bind-Value="SignInForm.Email" class="form-sign-in" placeholder="Enter your email address" />
+                    <ValidationMessage For="() => SignInForm.Email" class="text-danger" />
+                </div>
+                <div id="form-password" class="form-group">
+                    <label class="standard-heading">Password</label>
+                    <InputText type="password" @bind-Value="SignInForm.Password" class="form-sign-in" placeholder="Enter your password" />
+                    <ValidationMessage For="() => SignInForm.Password" class="text-danger" />
+                </div>
+                <div id="form-checkbox" class="form-group flex">
+                    <InputCheckbox @bind-Value="SignInForm.RememberMe" class="form-checkbox" />
+                    <label class="checkbox-label standard-text">RememberMe</label>
+                </div>
+                <button type="submit" class="theme-btn">Sign in</button>
+                <a href="#" class="forgot-password theme-color">Forgot your password?</a>
+            </EditForm>
+        </div>
+    </div>
+</section>
+
+
+@code {
+    private string? StatusMessage { get; set; }
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm]
+    private SignInFormModel SignInForm { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (HttpMethods.IsGet(HttpContext.Request.Method))
+        {
+            // Clear the existing external cookie to ensure a clean login process
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+        }
+    }
+
+    public async Task LoginUser()
+    {
+        // This doesn't count login failures towards account lockout
+        // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+        var result = await SignInManager.PasswordSignInAsync(SignInForm.Email, SignInForm.Password, SignInForm.RememberMe, lockoutOnFailure: false);
+        if (result.Succeeded)
+        {
+            
+            NavigationManager.NavigateTo(ReturnUrl ?? "/");
+
+        }
+        else
+        {
+            StatusMessage = "Incorrect email or password";
+        }
+    }
+
+    private sealed class SignInFormModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = "erik@erik.com";
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; } = "BytMig123!";
+
+        [Display(Name = "Remember me?")]
+        public bool RememberMe { get; set; }
+    }
+}

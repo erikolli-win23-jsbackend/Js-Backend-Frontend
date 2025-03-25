@@ -1,0 +1,19 @@
+.wrapper {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+
+.section-text-center {
+    text-align: center;
+    align-items: center;
+}
+
+.container {
+    padding: 0;
+}

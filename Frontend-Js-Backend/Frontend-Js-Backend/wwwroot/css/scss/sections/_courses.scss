@@ -1,0 +1,240 @@
+.courses {
+
+    .container {
+
+        .course-nav-container {
+            padding: 2rem 0;
+
+            .flex {
+
+                i {
+                    color: #9397AD;
+                    margin-right: 0.5rem;
+                }
+
+                .text-s {
+                    color: #9397AD;
+                }
+
+                .icon-double-arrow {
+                    font-size: 0.7rem;
+                    margin: 0 0.5rem;
+                }
+
+                .active-site {
+                    color: #6366F1;
+                }
+            }
+
+
+            .course-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding-top: 2rem;
+
+                .course-head {
+                    display: flex;
+                    gap: 2rem;
+
+                    .sort-bar {
+                        display: flex;
+                        align-items: center;
+                        padding: 0.75rem 1rem 0.75rem 1rem;
+                        border: 1px solid #B4B7C9;
+                        border-radius: 0.3rem;
+
+                        .text-s {
+                            color: #565973;
+                        }
+
+                        i {
+                            margin-left: 7rem;
+                            color: #33354D;
+                        }
+                    }
+
+                    .search-bar {
+                        min-width: 20rem;
+                        display: flex;
+                        background-color: #ffffff;
+                        position: relative;
+
+
+                        .search-input {
+                            width: 100%;
+                            padding: 0.75rem 1rem 0.75rem 1rem;
+                            border-radius: 0.3rem;
+                            border: 1px solid #B4B7C9;
+                            flex: 1;
+                        }
+
+                        .text-s {
+                            color: #565973;
+                        }
+
+                        ::placeholder {
+                            color: #B4B7C9;
+                        }
+
+                        .search-btn {
+                            border: none;
+                            background: transparent;
+                            padding: 0.75rem 1rem;
+                            position: absolute;
+                            right: 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: auto auto auto;
+            gap: 2rem;
+
+            .course-card {
+                text-decoration: none;
+                position: relative;
+                overflow: hidden;
+                border-radius: 0.5rem;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+
+
+                img {
+                    width: 100%;
+                }
+
+                .best-seller {
+                    color: #ffffff;
+                    background-color: #22C55E;
+                    padding: 0.15rem 0.6rem;
+                    border-radius: 0.5rem;
+                    position: absolute;
+                    top: 1rem;
+                    left: 1rem;
+                }
+
+                .save-to-favorites {
+                    padding: 0.7rem 0.8rem;
+                    background-color: #ffffff;
+                    border-radius: 50%;
+                    color: #33354D;
+                    position: absolute;
+                    right: 1rem;
+                    top: 1rem;
+                    font-size: 1rem;
+                }
+
+                .course-card-info {
+                    padding: 1.5rem;
+
+                    h5 {
+                        padding-bottom: 0.5rem;
+                    }
+
+                    .price {
+                        padding-top: 0.5rem;
+                    }
+
+                    hr {
+                        border: 1px solid #E2E5F1;
+                    }
+
+                    .flex {
+                        gap: 1rem;
+
+                        i {
+                            color: #9397AD;
+                            padding-right: 0.4rem;
+                        }
+
+                        .text-s {
+                            color: #9397AD;
+                        }
+
+                        .course-time {
+                            display: flex;
+                            align-items: center;
+                        }
+
+                        .course-reviews {
+                            display: flex;
+                            align-items: center;
+                        }
+
+                        .ordinary-price {
+                            display: flex;
+                            align-items: center;
+
+                            .price-before {
+                                text-decoration: line-through;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .course-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        .change-page-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 0 6rem 0;
+
+            i {
+                color: #33354D;
+                margin: 0 1.5rem 0 1.5rem;
+                cursor: pointer;
+            }
+
+            .page-change {
+                display: flex;
+                gap: 0.5rem;
+
+                .transparent-page {
+                    padding: 0.75rem 1.1rem;
+                    background-color: transparent;
+                    border-radius: 0.35rem;
+                    text-decoration: none;
+                }
+
+                .before-current-page {
+                    background-color: #EFF2FC;
+                }
+
+                .current-page {
+                    background-color: #6366F1;
+                    color: white;
+                }
+            }
+        }
+
+        .work-with-us {
+            background-color: #F3F6FF;
+            display: flex;
+            padding: 2rem 7rem;
+            gap: 5rem;
+
+            p {
+                padding-top: 3.5rem;
+            }
+
+            h1 {
+                padding-top: 1.5rem;
+                padding-bottom: 3rem;
+            }
+
+            .theme-btn {
+                padding: 0.8rem 2rem;
+            }
+        }
+    }
+}

@@ -1,0 +1,17 @@
+﻿@inherits LayoutComponentBase
+@layout AccountLayout
+
+
+<section class="account-details">
+    <div class="container">
+        <div class="account-details-grid">
+            <div class="account-details-left">
+                <Frontend_Js_Backend.Components.Sections.AccountProfile />
+                <ManageNavMenu />
+            </div>
+            <div class="account-details-right">
+                @Body
+            </div>
+        </div>
+    </div>
+</section>

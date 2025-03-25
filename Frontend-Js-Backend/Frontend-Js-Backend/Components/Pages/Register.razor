@@ -1,0 +1,156 @@
+﻿@page "/signup"
+
+@using System.ComponentModel.DataAnnotations
+@using System.Text
+@using System.Text.Encodings.Web
+@using FrontendJsBackend.Filters
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.WebUtilities
+@using Frontend_Js_Backend.Data
+@using Microsoft.EntityFrameworkCore
+
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject ILogger<Register> Logger
+@inject NavigationManager NavigationManager
+
+<PageTitle>Sign up</PageTitle>
+
+<section class="sign-up">
+    <div class="container">
+
+
+
+        <div class="sign-up-box">
+
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="alert-message danger section-text-center">
+                    @StatusMessage
+                </div>
+            }
+
+            <EditForm FormName="signupform" Model="SignUpForm" OnValidSubmit="RegisterUser" method="post" novalidate>
+                <DataAnnotationsValidator />
+
+
+                <h1 class="standard-heading">Create Account</h1>
+                <p class="standard-text text-m">Already have an account?<a href="/signin" class="theme-color"> Sign in here.</a></p>
+                <div class="form-flex">
+                    <div class="form-group">
+                        <label class="standard-heading">FirstName</label>
+                        <InputText @bind-Value="SignUpForm.FirstName" class="form-sign-in" placeholder="Enter your first name" />
+                        <ValidationMessage For="() => SignUpForm.FirstName" class="text-danger" />
+                    </div>
+                    <div class="form-group">
+                        <label class="standard-heading">LastName</label>
+                        <InputText @bind-Value="SignUpForm.LastName" class="form-sign-in" placeholder="Enter your last name" />
+                        <ValidationMessage For="() => SignUpForm.LastName" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="standard-heading">Email</label>
+                    <InputText type="email" @bind-Value="SignUpForm.Email" class="form-sign-in" placeholder="Enter your email address" />
+                    <ValidationMessage For="() => SignUpForm.Email" class="text-danger" />
+                </div>
+                <div class="form-group">
+                    <label class="standard-heading">Password</label>
+                    <InputText type="password" @bind-Value="SignUpForm.Password" class="form-sign-in" placeholder="Enter your password" />
+                    <ValidationMessage For="() => SignUpForm.Password" class="text-danger" />
+                </div>
+                <div class="form-group">
+                    <label class="standard-heading">ConfirmPassword</label>
+                    <InputText type="password" @bind-Value="SignUpForm.ConfirmPassword" class="form-sign-in" placeholder="Confirm your password" />
+                    <ValidationMessage For="() => SignUpForm.ConfirmPassword" class="text-danger" />
+                </div>
+                <div class="form-group flex">
+                    <InputCheckbox @bind-Value="SignUpForm.TermsAndConditions" class="form-checkbox" />
+                    <label class="checkbox-label standard-text">I agree to the <a href="#" class="theme-color">Terms</a> & <a href="#" class="theme-color">Conditions</a></label>
+                    <ValidationMessage For="() => SignUpForm.TermsAndConditions" class="text-danger" />
+                </div>
+                <button type="submit" class="theme-btn">Sign up</button>
+            </EditForm>
+        </div>
+    </div>
+</section>
+
+
+@code {
+    
+    private string? StatusMessage { get; set; } 
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    [SupplyParameterFromForm]
+    private SignUpFormModel SignUpForm { get; set; } = new();
+
+
+    public async Task RegisterUser(EditContext editContext)
+    {
+        var user = new ApplicationUser
+        {
+            FirstName = SignUpForm.FirstName,
+            LastName = SignUpForm.LastName,
+            UserName = SignUpForm.Email,
+            Email = SignUpForm.Email,
+
+        };
+
+        if (await UserManager.Users.AnyAsync(x => x.Email == user.Email))
+        {
+            StatusMessage = "Email already in use";
+            StateHasChanged();
+            return;
+        }
+
+        var result = await UserManager.CreateAsync(user, SignUpForm.Password);
+
+        if (!result.Succeeded)
+            return;
+
+        if (UserManager.Options.SignIn.RequireConfirmedAccount)
+        {
+            NavigationManager.NavigateTo($"/Confirm?Email={user.Email}");
+        }
+
+        await SignInManager.SignInAsync(user, isPersistent: false);
+        NavigationManager.NavigateTo(ReturnUrl ?? "/");
+
+    }
+
+
+
+    private sealed class SignUpFormModel
+    {
+        [Required]
+        [Display(Name = "First name", Prompt = "Enter your first name")]
+        public string FirstName { get; set; } = null!;
+
+        [Required]
+        [Display(Name = "Last name", Prompt = "Enter your last name")]
+        public string LastName { get; set; } = null!;
+
+        [Required]
+        [DataType(DataType.EmailAddress)]
+        [Display(Name = "Email", Prompt = "Enter your email address")]
+        [RegularExpression(@"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}", ErrorMessage = "invalid email address")]
+        public string Email { get; set; } = null!;
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password", Prompt = "Enter your password")]
+        [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$", ErrorMessage = "Invalid password")]
+        public string Password { get; set; } = null!;
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "ConfirmPassword", Prompt = "Confirm password")]
+        [Compare(nameof(Password), ErrorMessage = "Password does not match")]
+        public string ConfirmPassword { get; set; } = null!;
+
+        [CheckboxRequired]
+        [Display(Name = "Terms and condition checkbox", Prompt = "Terms and Conditions")]
+        public bool TermsAndConditions { get; set; }
+    }
+}

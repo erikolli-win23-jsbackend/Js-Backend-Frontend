@@ -1,0 +1,46 @@
+#tool-info {
+    background-color: #E2E5F1;
+
+    .container {
+
+        h1 {
+            padding-top: 6vh;
+            padding-bottom: 2vh;
+            line-height: 130%;
+        }
+
+        h5 {
+            line-height: 140%;
+        }
+
+        .grid-features {
+            display: grid;
+            grid-template-columns: auto auto auto;
+            padding-top: 5vh;
+            padding-bottom: 10vh;
+
+            .feature-card {
+                padding: 5vh 2vw;
+                border-radius: 0.5rem;
+                text-align: center;
+
+
+                &:hover {
+                    background-color: #ffffff;
+                    cursor: pointer;
+                }
+
+
+                i {
+                    font-size: 2.5rem;
+                    padding-bottom: 3vh;
+                    color: #6366F1;
+                }
+
+                h5 {
+                    padding-bottom: 1vh;
+                }
+            }
+        }
+    }
+}

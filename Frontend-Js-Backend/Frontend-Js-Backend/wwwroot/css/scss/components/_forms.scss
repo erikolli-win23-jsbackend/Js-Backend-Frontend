@@ -1,0 +1,54 @@
+.form-flex {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.form-checkbox {
+    accent-color: #6366F1;
+    height: 1rem;
+    width: 1rem;
+    border: 1px solid #B4B7C9;
+    margin-right: 0.5rem;
+}
+
+.form-sign-in {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    align-items: center;
+    border: 1px solid #B4B7C9;
+    border-radius: 0.4rem;
+
+
+    &::placeholder {
+        color: #B4B7C9;
+    }
+
+    &:focus {
+        outline: none;
+        border: 1px solid #565973;
+    }
+
+    &.input-validation-error {
+        border: 1px solid #EF4444;
+        color: #EF4444;
+
+        &::placeholder {
+            color: #EF4444;
+        }
+    }
+}
+
+.form-group {
+    padding-bottom: 1.5rem;
+    flex: 1;
+
+    label {
+        padding-bottom: 0.5rem;
+    }
+
+    .checkbox-label {
+        padding-bottom: 0;
+    }
+}
+

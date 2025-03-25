@@ -1,0 +1,38 @@
+.theme-btn {
+    background-color: #6366F1;
+    color: #ffffff;
+    padding: 0.8rem 2rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    border: none;
+    font-weight: 600;
+
+    &:hover {
+        background-color: #565973;
+    }
+}
+
+.white-btn {
+    background-color: #EFF2FC;
+    color: #33354D;
+    gap: 3%;
+    padding: 0.8rem 2rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    border: none;
+
+    &:hover {
+        background-color: #565973;
+        color: white;
+    }
+}
+
+.social-btn {
+    padding: 0.8rem 1rem;
+    background-color: #EFF2FC;
+    border-radius: 0.5rem;
+    margin: 0 0.75rem 0 0.75rem;
+    align-items: center;
+    justify-content: center;
+}

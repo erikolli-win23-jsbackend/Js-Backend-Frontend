@@ -1,0 +1,43 @@
+.mobile-app {
+    background-color: #F3F6FF;
+
+
+    .container {
+        padding: 5vh 0;
+        display: flex;
+
+        img {
+            padding-left: 7rem;
+        }
+
+        .our-app {
+            padding-left: 9rem;
+
+
+            h1 {
+                line-height: 130%;
+                padding-top: 4rem;
+                padding-bottom: 3vh;
+            }
+
+            .text-m {
+                color: #9397AD;
+            }
+
+            i {
+                color: #FFBA08;
+                padding-top: 0.75rem;
+                padding-bottom: 1.1rem;
+                font-size: 0.8rem;
+            }
+
+            .flex {
+                padding-bottom: 3rem;
+
+                .text-m {
+                    color: #565973;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,238 @@
+﻿.single-course {
+
+    .single-course-showcase {
+        position: relative;
+
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .showcase-content {
+            position: absolute;
+            top: 20%;
+            left: 18.75rem;
+
+
+
+            .flex-tag {
+                display: flex;
+                gap: 0.75rem;
+                padding-bottom: 1rem;
+
+                .best-seller-tag {
+                    color: white;
+                    padding: 0.3rem 1rem;
+                    background-color: #22C55E;
+                    border-radius: 0.5rem;
+                }
+
+                .digital-tag {
+                    color: #33354D;
+                    background-color: white;
+                    padding: 0.3rem 1rem;
+                    border-radius: 0.5rem;
+                }
+            }
+
+            h1 {
+                color: white;
+            }
+
+            .text-l {
+                color: white;
+                padding-top: 1rem;
+            }
+
+
+            .course-info {
+                display: flex;
+                gap: 2rem;
+                padding-top: 2rem;
+
+                .rating {
+
+                    .stars {
+                        color: yellow;
+                    }
+
+                    .reviews {
+                        color: white;
+                        margin-left: 0.25rem;
+                    }
+                }
+
+                .likes {
+                    color: white;
+
+                    i {
+                        margin-right: 0.25rem;
+                    }
+                }
+
+                .hours {
+                    color: white;
+
+                    i {
+                        margin-right: 0.25rem;
+                    }
+                }
+            }
+
+            .flex {
+                gap: 2rem;
+                align-items: center;
+
+                .author {
+                    display: flex;
+                    padding-top: 10rem;
+
+                    img {
+                        width: 4rem;
+                        height: 4rem;
+                        border-radius: 50%;
+                    }
+
+                    .author-by {
+                        padding-left: 1rem;
+
+                        h6 {
+                            color: white;
+                        }
+
+                        h6 {
+                            padding-top: 0.5rem;
+                        }
+
+                        p {
+                            color: white;
+                            padding-top: 0.5rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .container {
+        padding-top: 4rem;
+
+        .course-description {
+            display: flex;
+
+
+
+            .course-description-left {
+                max-width: 60%;
+
+                h3 {
+                    padding-bottom: 1rem;
+                }
+
+                .course-info-head {
+                    padding-bottom: 2rem;
+
+                    h1 {
+                        padding-bottom: 1rem;
+                    }
+                }
+
+                .course-learn {
+
+                    p {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        margin-bottom: 1rem;
+
+                        i {
+                            color: #6366F1;
+                        }
+                    }
+                }
+            }
+
+            .course-description-right {
+                padding-left: 8rem;
+
+                .course-includes {
+                    border-radius: 8px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    padding: 2rem 8rem 2rem 2rem;
+                    text-align: left;
+
+                    h4 {
+                        padding-bottom: 1rem;
+                    }
+
+                    .course-includes-info {
+                        padding-bottom: 1.5rem;
+
+                        p {
+                            display: flex;
+                            align-items: center;
+                            gap: 0.5rem;
+                            margin-bottom: 0.5rem;
+                            color: #565973;
+
+                            i {
+                                color: #9397AD;
+                            }
+                        }
+                    }
+
+                    .flex {
+                        gap: 0.5rem;
+                        padding-bottom: 1.5rem;
+
+                        .price-before {
+                            color: #9397AD;
+                            text-decoration: line-through;
+                        }
+                    }
+
+                    .theme-btn {
+                        margin-top: 1.5rem;
+                    }
+                }
+            }
+        }
+
+        .program-details {
+            padding-top: 3rem;
+            max-width: 60%;
+
+            h1 {
+                padding-bottom: 2rem;
+            }
+
+            .steps {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                align-items: flex-start;
+                gap: 1.5rem;
+                position: relative;
+                margin-bottom: 2rem;
+
+                .circle {
+                    width: 4rem;
+                    height: 4rem;
+                    border-radius: 50%;
+                    background: white;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border: 0.5rem solid #E2E5F1;
+                }
+
+                .content-details {
+
+                    p {
+                        padding-top: 0.25rem;
+                    }
+                }
+            }
+        }
+    }
+}

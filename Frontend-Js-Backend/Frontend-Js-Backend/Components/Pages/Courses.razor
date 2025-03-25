@@ -1,0 +1,204 @@
+﻿@page "/courses"
+@attribute [StreamRendering]
+@attribute [Authorize]
+
+
+<PageTitle>Courses</PageTitle>
+
+<section class="courses">
+    <div class="container">
+        <div class="course-nav-container">
+            <div class="flex">
+                <i class="fa-light fa-house"></i>
+                <p class="standard-text text-s">Home</p>
+                <i class="fa-solid fa-angles-right icon-double-arrow"></i>
+                <p class="standard-text text-s active-site">Courses</p>
+            </div>
+            <div class="course-header">
+                <h1 class="standard-heading">Courses</h1>
+                <div class="course-head">
+                    <div class="sort-bar">
+                        <p class="standard-text text-s">All categories</p>
+                        <i class="fa-solid fa-angle-down"></i>
+                    </div>
+                    <div class="search-bar">
+                        <input type="text" class="search-input standard-text text-s" placeholder="Search courses">
+                        <button class="search-btn">
+                            <i class="fa-light fa-magnifying-glass"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="courses-grid">
+            @if (courses == null)
+            {
+                <p><em>Loading Courses. Please be patient</em></p>
+            }
+            else
+            {
+                @foreach (var course in courses)
+                {
+                    <a href="/courses/@course.Id" class="course-card">
+                        <img src="@course.ImageUri" alt="@course.Title">
+                        @if (course.IsBestSeller)
+                        {
+                            <p class="best-seller text-s">Best Seller</p>
+                        }
+                        <i class="fa-regular fa-bookmark save-to-favorites"></i>
+                        <div class="course-card-info">
+                            <h5 class="standard-heading">@course.Title</h5>
+                            <p class="standard-text text-s">
+                                @string.Join(", ", course.Authors?.Select(a => $"{a.FirstName} {a.LastName}"))
+                            </p>
+                            @if (course.Prices?.Discount > 0)
+                            {
+                                <div class="flex">
+                                    <p class="price sale">@course.Prices.Currency@course.Prices.Price</p>
+                                    <div class="ordinary-price price">
+                                        <p class="price-before standard-text">@course.Prices.Currency@course.Prices.Discount</p>
+                                        <hr>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="price">@course.Prices.Currency@course.Prices.Price</p>
+                            }
+                            <hr>
+                            <div class="flex">
+                                <div class="course-time">
+                                    <i class="fa-regular fa-clock"></i>
+                                    <p class="standard-text text-s">@course.Hours</p>
+                                </div>
+                                <div class="course-reviews">
+                                    <i class="fa-light fa-thumbs-up"></i>
+                                    <p class="standard-text text-s">@course.LikesInProcent (@course.Likes)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                }
+            }
+        </div>
+
+        <div class="change-page-nav">
+            <i class="fa-solid fa-angle-left"></i>
+            <div class="page-change">
+                <a href="#" class="transparent-page text-nav">1</a>
+                <a href="#" class="transparent-page text-nav before-current-page">2</a>
+                <a href="#" class="transparent-page text-nav current-page">3</a>
+                <a href="#" class="transparent-page text-nav">4</a>
+            </div>
+            <i class="fa-solid fa-angle-right"></i>
+        </div>
+
+        <div class="work-with-us">
+            <div>
+                <p class="standard-text text-lead">Ready to get started?</p>
+                <h1 class="standard-heading">Take Your <span class="theme-color">Skills</span> to the Next Level</h1>
+                <a href="#" class="theme-btn">Work with us</a>
+            </div>
+            <img src="/images/pics/work-with-us.png" alt="illustration of a person working on a laptop">
+        </div>
+    </div>
+</section>
+
+
+
+
+
+@code {
+    private string? StatusMessage { get; set; }
+
+    private List<CourseModel>? courses;
+
+    public class GraphQLResponse
+    {
+        public CourseData Data { get; set; } = new();
+    }
+
+    public class CourseData
+    {
+        public List<CourseModel> GetCourses { get; set; } = new();
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var query = new
+            {
+                query = @"
+            {
+                getCourses {
+                    id
+                    title
+                    isBestSeller
+                    imageUri
+                    hours
+                    likesInProcent
+                    likes
+                    prices {
+                        currency
+                        price
+                        discount
+                    }
+                    authors {
+                        firstName
+                        lastName
+                    }
+                }
+            }"
+            };
+
+            var response = await Http.PostAsJsonAsync("https://courseprovider-win23jsbackend-erikolli.azurewebsites.net/api/graphql", query);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                StatusMessage = "GraphQL query failed.";
+                return;
+            }
+
+            var result = await response.Content.ReadFromJsonAsync<GraphQLResponse>();
+            courses = result?.Data?.GetCourses;
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error: {ex.Message}";
+        }
+    }
+
+    public class CourseModel
+    {
+        public string Id { get; set; } = null!;
+        public string? ImageUri { get; set; }
+        public bool IsBestSeller { get; set; }
+        public string? Title { get; set; }
+        public string? Price { get; set; }
+        public string? DiscountPrice { get; set; }
+        public string? Hours { get; set; }
+        public string? LikesInProcent { get; set; }
+        public string? Likes { get; set; }
+        public List<Author>? Authors { get; set; }
+        public Prices? Prices { get; set; }
+    }
+
+    public class Author
+    {
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+    }
+
+    public class Prices
+    {
+        public string Currency { get; set; } = null!;
+        public decimal? Price { get; set; }
+        public decimal? Discount { get; set; }
+    }
+}
+
+

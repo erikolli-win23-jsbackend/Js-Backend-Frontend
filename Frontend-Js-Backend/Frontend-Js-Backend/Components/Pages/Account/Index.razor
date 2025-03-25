@@ -1,0 +1,225 @@
+﻿@rendermode InteractiveServer
+@page "/account/details"
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using Frontend_Js_Backend.Data
+@using Microsoft.AspNetCore.Components.Authorization
+
+
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IDbContextFactory<ApplicationDbContext> DbContextFactory
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+
+
+
+@if (!string.IsNullOrEmpty(StatusMessage))
+{
+    <div class="alert alert-info">@StatusMessage</div>
+}
+
+<EditForm FormName="BasicInfo" Model="ProfileInfo" OnValidSubmit="UpdateUser" novalidate>
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" role="alert" />
+    <h2 class="standard-heading">Account Details</h2>
+    <h5 class="standard-heading"><span class="theme-color">Basic Info</span></h5>
+    <div class="form-flex">
+        <div class="form-group">
+            <label class="standard-heading">First Name</label>
+            <InputText @bind-Value="ProfileInfo.FirstName" class="form-sign-in" placeholder="Enter your first name" />
+            <ValidationMessage For="() => ProfileInfo.FirstName" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label class="standard-heading">Last Name</label>
+            <InputText @bind-Value="ProfileInfo.LastName" class="form-sign-in" placeholder="Enter your last name" />
+            <ValidationMessage For="() => ProfileInfo.LastName" class="text-danger" />
+        </div>
+    </div>
+
+    <div class="form-flex">
+        <div class="form-group">
+            <label class="standard-heading">Email</label>
+            <InputText @bind-Value="ProfileInfo.Email" class="form-sign-in" placeholder="Enter your email address" />
+            <ValidationMessage For="() => ProfileInfo.Email" class="text-danger" />
+        </div>
+        <div class="form-group">
+            <label class="standard-heading">Phone number (Optional)</label>
+            <InputText @bind-Value="ProfileInfo.PhoneNumber" class="form-sign-in" placeholder="Enter your phone number" />
+            <ValidationMessage For="() => ProfileInfo.PhoneNumber" class="text-danger" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="standard-heading">Bio (Optional)</label>
+        <textarea @bind="ProfileInfo.Bio" class="bio-textarea standard-text" placeholder="Add a short bio..." />
+        <ValidationMessage For="() => ProfileInfo.Bio" class="text-danger" />
+    </div>
+    <div class="form-flex">
+        <button type="reset" class="white-btn">Cancel</button>
+        <button type="submit" class="theme-btn"><span>Save changes</span></button>
+    </div>
+</EditForm>
+<hr>
+
+<EditForm FormName="AdressInfo" Model="ProfileInfo" OnValidSubmit="UpdateUser" novalidate>
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" role="alert" />
+    <h5 class="standard-heading"><span class="theme-color">Address Info</span></h5>
+    <div class="form-group">
+        <label class="standard-heading">Address Line 1</label>
+        <InputText @bind-Value="ProfileInfo.AddressLine1" class="form-sign-in" placeholder="Enter address line 1" />
+        <ValidationMessage For="() => ProfileInfo.AddressLine1" class="text-danger" />
+    </div>
+
+    <div class="form-group">
+        <label class="standard-heading">Address Line 2 (Optional)</label>
+        <InputText @bind-Value="ProfileInfo.AddressLine2" class="form-sign-in" placeholder="Enter address line 2" />
+        <ValidationMessage For="() => ProfileInfo.AddressLine2" class="text-danger" />
+    </div>
+
+    <div class="form-flex">
+        <div class="form-group">
+            <label class="standard-heading">Postal Code</label>
+            <InputText @bind-Value="ProfileInfo.PostalCode" class="form-sign-in" placeholder="Enter postal code" />
+            <ValidationMessage For="() => ProfileInfo.PostalCode" class="text-danger" />
+        </div>
+
+        <div class="form-group">
+            <label class="standard-heading">City</label>
+            <InputText @bind-Value="ProfileInfo.City" class="form-sign-in" placeholder="Enter city" />
+            <ValidationMessage For="() => ProfileInfo.City" class="text-danger" />
+        </div>
+    </div>
+
+    <div class="form-flex">
+        <button type="reset" class="white-btn">Cancel</button>
+        <button type="submit" class="theme-btn"><span>Save changes</span></button>
+    </div>
+</EditForm>
+
+@code {
+    private string? StatusMessage;
+    private ProfileInfoModel ProfileInfo { get; set; } = new();
+    
+    private string? userId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUserDataAsync();
+    }
+
+    private async Task LoadUserDataAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        userId = UserManager.GetUserId(authState.User);
+
+        if (userId == null)
+        {
+            StatusMessage = "Error: No logged-in user found.";
+            return;
+        }
+
+        await using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        var user = await dbContext.Users.Include(u => u.Address).AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            StatusMessage = "Error: User not found.";
+            return;
+        }
+
+        ProfileInfo.FirstName = user.FirstName ?? "";
+        ProfileInfo.LastName = user.LastName ?? "";
+        ProfileInfo.Email = user.Email ?? "";
+        ProfileInfo.PhoneNumber = user.PhoneNumber ?? "";
+        ProfileInfo.Bio = user.Bio ?? "";
+
+        if (user.Address != null)
+        {
+            ProfileInfo.AddressLine1 = user.Address.AddressLine1 ?? "";
+            ProfileInfo.AddressLine2 = user.Address.AddressLine2 ?? "";
+            ProfileInfo.PostalCode = user.Address.PostalCode ?? "";
+            ProfileInfo.City = user.Address.City ?? "";
+        }
+    }
+
+    private async Task UpdateUser()
+    {
+        if (userId == null)
+        {
+            StatusMessage = "Error: No logged-in user found.";
+            return;
+        }
+
+        await using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        var userToUpdate = await dbContext.Users.Include(u => u.Address).AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (userToUpdate == null)
+        {
+            StatusMessage = "Error: User not found.";
+            return;
+        }
+
+        userToUpdate.FirstName = ProfileInfo.FirstName;
+        userToUpdate.LastName = ProfileInfo.LastName;
+        userToUpdate.Email = ProfileInfo.Email;
+        userToUpdate.PhoneNumber = ProfileInfo.PhoneNumber;
+        userToUpdate.Bio = ProfileInfo.Bio;
+
+        if (userToUpdate.Address == null)
+        {
+            userToUpdate.Address = new AddressEntity();
+        }
+
+        
+        userToUpdate.Address.AddressLine1 = ProfileInfo.AddressLine1;
+        userToUpdate.Address.AddressLine2 = ProfileInfo.AddressLine2;
+        userToUpdate.Address.PostalCode = ProfileInfo.PostalCode;
+        userToUpdate.Address.City = ProfileInfo.City;
+
+
+    try
+        {
+            dbContext.Users.Update(userToUpdate);
+            await dbContext.SaveChangesAsync();
+
+
+
+
+            //  Reload the page to update the partial view
+            Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = "Error updating profile: " + ex.InnerException?.Message ?? ex.Message;
+            Console.WriteLine(ex.ToString()); // More complete
+        }
+    }
+
+    private sealed class ProfileInfoModel
+    {
+        [Required]
+        public string FirstName { get; set; } = null!;
+
+        [Required]
+        public string LastName { get; set; } = null!;
+
+        [Required]
+        public string Email { get; set; } = null!;
+
+        public string? PhoneNumber { get; set; }
+
+        public string? Bio { get; set; }
+
+        public string? AddressLine1 { get; set; } = null!;
+
+        public string? AddressLine2 { get; set; }
+
+        public string? PostalCode { get; set; } = null!;
+
+        public string? City { get; set; } = null!;
+    }
+
+}
