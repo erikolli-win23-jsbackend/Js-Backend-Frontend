@@ -24,7 +24,8 @@ builder.Services.AddScoped(sp => {
         BaseAddress = new Uri("https://courseprovider-win23jsbackend-erikolli.azurewebsites.net/api/")
     };
 
-    client.DefaultRequestHeaders.Add("x-functions-key", "jQZuvT44S15rOId0TG4uBIGISWXIpF50qC-2sLIOmdh1AzFuczGGDg==");
+    var functionKey = builder.Configuration["AzureFunctionKey"];
+    client.DefaultRequestHeaders.Add("x-functions-key", functionKey);
 
     return client;
 });

@@ -170,14 +170,21 @@
 
         if (userToUpdate.Address == null)
         {
-            userToUpdate.Address = new AddressEntity();
+            userToUpdate.Address = new AddressEntity
+                {
+                    AddressLine1 = ProfileInfo.AddressLine1 ?? "",
+                    AddressLine2 = ProfileInfo.AddressLine2,
+                    PostalCode = ProfileInfo.PostalCode ?? "",
+                    City = ProfileInfo.City ?? ""
+                };
         }
-
-        
-        userToUpdate.Address.AddressLine1 = ProfileInfo.AddressLine1;
-        userToUpdate.Address.AddressLine2 = ProfileInfo.AddressLine2;
-        userToUpdate.Address.PostalCode = ProfileInfo.PostalCode;
-        userToUpdate.Address.City = ProfileInfo.City;
+        else
+        {
+            userToUpdate.Address.AddressLine1 = ProfileInfo.AddressLine1 ?? "";
+            userToUpdate.Address.AddressLine2 = ProfileInfo.AddressLine2;
+            userToUpdate.Address.PostalCode = ProfileInfo.PostalCode ?? "";
+            userToUpdate.Address.City = ProfileInfo.City ?? "";
+        }
 
 
     try
