@@ -1,15 +1,27 @@
 ﻿@page "/account/notifications"
+@using FrontendJsBackend.Services
+@inject UserNotificationService UserNotificationService
+@inject UserManager<ApplicationUser> UserManager
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IDbContextFactory<ApplicationDbContext> DbContextFactory
 
-<div class="notifications">
+@if (!string.IsNullOrEmpty(statusMessage))
+{
+    <p class="alert alert-info">@statusMessage</p>
+}
+
+<EditForm FormName="NotificationInfo" Model="formModel" OnValidSubmit="SaveChanges" class="notifications">
+    <DataAnnotationsValidator />
     <h2 class="standard-heading">Notifications</h2>
     <div class="form-group">
         <label class="standard-heading">Preferred email for notifications</label>
-        <input type="text" class="form-sign-in" placeholder="example@gmail.com" name="email">
+        <InputText type="email" @bind-Value="formModel.NewsletterEmail" class="form-sign-in" placeholder="example@gmail.com" />
+        <ValidationMessage For="@(() => formModel.NewsletterEmail)" />
     </div>
     <div class="flex">
         <div class="switch-btn">
             <label class="switch">
-                <input type="checkbox" />
+                <InputCheckbox @bind-Value="formModel.IsSubscribedToNewsletter" />
                 <span class="slider round"></span>
             </label>
         </div>
@@ -36,9 +48,66 @@
         <button type="reset" class="white-btn">Cancel</button>
         <button type="submit" class="theme-btn"><span>Save changes</span></button>
     </div>
-</div>
+</EditForm>
+
+
     
 
 @code {
+    private string? statusMessage;
+    private ApplicationUser? currentUser;
+    private NotificationModel formModel = new();
 
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var userId = authState.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        if (!string.IsNullOrEmpty(userId))
+        {
+            await using var context = await DbContextFactory.CreateDbContextAsync();
+            currentUser = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (currentUser is not null)
+            {
+                formModel.IsSubscribedToNewsletter = currentUser.IsSubscribedToNewsletter;
+                formModel.NewsletterEmail = currentUser.NewsletterEmail;
+            }
+        }
+    }
+
+    private async Task SaveChanges()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = await UserManager.GetUserAsync(authState.User);
+
+        if (user != null)
+        {
+            user.IsSubscribedToNewsletter = formModel.IsSubscribedToNewsletter;
+            user.NewsletterEmail = formModel.NewsletterEmail;
+
+            var result = await UserManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                statusMessage = "Preferences saved successfully!";
+                
+                formModel.IsSubscribedToNewsletter = user.IsSubscribedToNewsletter;
+                formModel.NewsletterEmail = user.NewsletterEmail;
+            }
+            else
+            {
+                statusMessage = "Failed to save preferences.";
+            }
+        }
+    }
+
+
+    public class NotificationModel
+    {
+        [EmailAddress]
+        public string? NewsletterEmail { get; set; }
+
+        public bool IsSubscribedToNewsletter { get; set; }
+    }
 }

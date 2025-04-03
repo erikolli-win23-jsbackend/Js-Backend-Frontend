@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Frontend_Js_Backend.Data;
 
-// Add profile data for application users by adding properties to the ApplicationUser class
 public class ApplicationUser : IdentityUser
 {
     public string FirstName { get; set; } = null!;
@@ -13,6 +12,10 @@ public class ApplicationUser : IdentityUser
     public string? Bio { get; set; }
 
     public string? ProfileImage { get; set; } = "avatar.png";
+
+    public bool IsSubscribedToNewsletter { get; set; }
+
+    public string? NewsletterEmail { get; set; }
 
     public int? AddressId { get; set; }
 

@@ -195,13 +195,13 @@
 
 
 
-            //  Reload the page to update the partial view
+            
             Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
         }
         catch (Exception ex)
         {
             StatusMessage = "Error updating profile: " + ex.InnerException?.Message ?? ex.Message;
-            Console.WriteLine(ex.ToString()); // More complete
+            Console.WriteLine(ex.ToString());
         }
     }
 
