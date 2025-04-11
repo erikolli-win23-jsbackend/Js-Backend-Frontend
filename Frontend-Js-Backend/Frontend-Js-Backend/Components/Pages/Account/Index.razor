@@ -154,7 +154,8 @@
         }
 
         await using var dbContext = await DbContextFactory.CreateDbContextAsync();
-        var userToUpdate = await dbContext.Users.Include(u => u.Address).AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+        var userToUpdate = await dbContext.Users.Include(u => u.Address).FirstOrDefaultAsync(u => u.Id == userId);
+
 
         if (userToUpdate == null)
         {
@@ -193,9 +194,6 @@
             await dbContext.SaveChangesAsync();
 
 
-
-
-            
             Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
         }
         catch (Exception ex)

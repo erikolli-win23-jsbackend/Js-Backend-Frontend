@@ -17,6 +17,8 @@ public class ApplicationUser : IdentityUser
 
     public string? NewsletterEmail { get; set; }
 
+    public string? UserRole { get; set; } = "User";
+
     public int? AddressId { get; set; }
 
     public AddressEntity? Address { get; set; }
@@ -28,12 +30,12 @@ public class AddressEntity
 
     public int Id { get; set; }
 
-    public string AddressLine1 { get; set; } = null!;
+    public string? AddressLine1 { get; set; } 
 
     public string? AddressLine2 { get; set;}
 
-    public string PostalCode { get; set; } = null!;
+    public string? PostalCode { get; set; } 
 
-    public string City { get; set; } = null!;
+    public string? City { get; set; } 
 
 }

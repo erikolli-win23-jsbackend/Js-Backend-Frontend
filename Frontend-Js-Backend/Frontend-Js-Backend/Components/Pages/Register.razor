@@ -106,12 +106,16 @@
 
         var result = await UserManager.CreateAsync(user, SignUpForm.Password);
 
-        if (!result.Succeeded)
-            return;
-
-        if (UserManager.Options.SignIn.RequireConfirmedAccount)
+        if (result.Succeeded)
         {
-            NavigationManager.NavigateTo($"/Confirm?Email={user.Email}");
+            if (UserManager.Options.SignIn.RequireConfirmedAccount)
+            {
+                NavigationManager.NavigateTo($"/Confirm?Email={user.Email}");
+                return;
+            }
+
+            await SignInManager.SignInAsync(user, isPersistent: false);
+            NavigationManager.NavigateTo(ReturnUrl ?? "/");
         }
 
         await SignInManager.SignInAsync(user, isPersistent: false);

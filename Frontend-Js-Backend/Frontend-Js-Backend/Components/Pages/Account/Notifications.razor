@@ -1,33 +1,42 @@
 ﻿@page "/account/notifications"
-@using FrontendJsBackend.Services
-@inject UserNotificationService UserNotificationService
-@inject UserManager<ApplicationUser> UserManager
-@inject AuthenticationStateProvider AuthStateProvider
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
 @inject IDbContextFactory<ApplicationDbContext> DbContextFactory
+@inject AuthenticationStateProvider AuthStateProvider
 
-@if (!string.IsNullOrEmpty(statusMessage))
+@if (!string.IsNullOrEmpty(StatusMessage))
 {
-    <p class="alert alert-info">@statusMessage</p>
+    <p class="danger">
+        @StatusMessage
+    </p>
 }
 
-<EditForm FormName="NotificationInfo" Model="formModel" OnValidSubmit="SaveChanges" class="notifications">
+<EditForm FormName="notifications-options" Model="notificationModel" OnValidSubmit="SaveChanges" class="notifications">
     <DataAnnotationsValidator />
+    <ValidationSummary />
+
     <h2 class="standard-heading">Notifications</h2>
+
     <div class="form-group">
         <label class="standard-heading">Preferred email for notifications</label>
-        <InputText type="email" @bind-Value="formModel.NewsletterEmail" class="form-sign-in" placeholder="example@gmail.com" />
-        <ValidationMessage For="@(() => formModel.NewsletterEmail)" />
+        <InputText @bind-Value="notificationModel.NewsletterEmail" class="form-sign-in" placeholder="example@gmail.com" />
+        <ValidationMessage For="@(() => notificationModel.NewsletterEmail)" class="text-danger" />
     </div>
+
     <div class="flex">
         <div class="switch-btn">
             <label class="switch">
-                <InputCheckbox @bind-Value="formModel.IsSubscribedToNewsletter" />
+                <InputCheckbox @bind-Value="notificationModel.IsSubscribedToNewsletter" />
                 <span class="slider round"></span>
             </label>
         </div>
         <div class="switch-text">
             <h6 class="standard-heading">Subscribe to Newsletter</h6>
-            <p class="text-s ">Nec, posuere non felis duis massa vitae aliquet interdum scelerisque. Neque ullamcorper.</p>
+            <p class="text-s">Nec, posuere non felis duis massa vitae aliquet interdum scelerisque. Neque ullamcorper.</p>
         </div>
     </div>
 
@@ -51,12 +60,10 @@
 </EditForm>
 
 
-    
 
 @code {
-    private string? statusMessage;
-    private ApplicationUser? currentUser;
-    private NotificationModel formModel = new();
+    private string? StatusMessage;
+    private NotificationModel notificationModel = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -66,12 +73,20 @@
         if (!string.IsNullOrEmpty(userId))
         {
             await using var context = await DbContextFactory.CreateDbContextAsync();
-            currentUser = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
 
-            if (currentUser is not null)
+            if (user is not null)
             {
-                formModel.IsSubscribedToNewsletter = currentUser.IsSubscribedToNewsletter;
-                formModel.NewsletterEmail = currentUser.NewsletterEmail;
+                if (user.IsSubscribedToNewsletter)
+                {
+                    notificationModel.NewsletterEmail = user.NewsletterEmail;
+                    notificationModel.IsSubscribedToNewsletter = true;
+                }
+                else
+                {
+                    notificationModel.NewsletterEmail = string.Empty;
+                    notificationModel.IsSubscribedToNewsletter = false;
+                }
             }
         }
     }
@@ -79,35 +94,40 @@
     private async Task SaveChanges()
     {
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-        var user = await UserManager.GetUserAsync(authState.User);
+        var userId = authState.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-        if (user != null)
+        if (!string.IsNullOrEmpty(userId))
         {
-            user.IsSubscribedToNewsletter = formModel.IsSubscribedToNewsletter;
-            user.NewsletterEmail = formModel.NewsletterEmail;
+            await using var context = await DbContextFactory.CreateDbContextAsync();
+            var userToUpdate = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
-            var result = await UserManager.UpdateAsync(user);
+            if (userToUpdate is null)
+            {
+                StatusMessage = "User not found.";
+                return;
+            }
 
-            if (result.Succeeded)
-            {
-                statusMessage = "Preferences saved successfully!";
-                
-                formModel.IsSubscribedToNewsletter = user.IsSubscribedToNewsletter;
-                formModel.NewsletterEmail = user.NewsletterEmail;
-            }
-            else
-            {
-                statusMessage = "Failed to save preferences.";
-            }
+            userToUpdate.IsSubscribedToNewsletter = notificationModel.IsSubscribedToNewsletter;
+            userToUpdate.NewsletterEmail = notificationModel.IsSubscribedToNewsletter
+                ? notificationModel.NewsletterEmail
+                : null;
+
+            await context.SaveChangesAsync();
+
+            StatusMessage = userToUpdate.IsSubscribedToNewsletter
+                ? "You are now subscribed to our newsletter!"
+                : "You have unsubscribed from our newsletter.";
         }
     }
 
 
+
     public class NotificationModel
     {
-        [EmailAddress]
+        [RegularExpression(@"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}", ErrorMessage = "invalid email address")]
         public string? NewsletterEmail { get; set; }
 
         public bool IsSubscribedToNewsletter { get; set; }
+
     }
 }
